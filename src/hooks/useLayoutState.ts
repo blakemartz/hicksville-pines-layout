@@ -6,24 +6,26 @@ const STORAGE_KEY = "hicksville-table-layout";
 function createDefaultState(): LayoutState {
   const tables = [];
 
+  // Table 1: rectangular 2'x4'
+  tables.push({
+    id: 1,
+    label: "1",
+    shape: "rect" as const,
+    position: { x: 5, y: 93 },
+  });
+
+  // Tables 2–14: round 6' diameter
   for (let i = 0; i < 13; i++) {
     tables.push({
-      id: i + 1,
-      label: String(i + 1),
+      id: i + 2,
+      label: String(i + 2),
       shape: "round" as const,
       position: {
-        x: 5 + (i % 7) * 13,
+        x: 18 + (i % 7) * 11,
         y: i < 7 ? 93 : 86,
       },
     });
   }
-
-  tables.push({
-    id: 14,
-    label: "14",
-    shape: "rect" as const,
-    position: { x: 83, y: 86 },
-  });
 
   return {
     version: 1,

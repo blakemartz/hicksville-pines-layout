@@ -69,8 +69,8 @@ function TableMarker({
   const isRound = table.shape === "round";
   // Scale marker sizes to match rendered image dimensions vs natural
   const renderScale = imageWidth / IMAGE_NATURAL_WIDTH;
-  const width = (isRound ? 6 : 4) * PX_PER_FOOT * sizeScale * renderScale;
-  const height = (isRound ? 6 : 2) * PX_PER_FOOT * sizeScale * renderScale;
+  const width = (isRound ? 6 : 2) * PX_PER_FOOT * sizeScale * renderScale;
+  const height = (isRound ? 6 : 4) * PX_PER_FOOT * sizeScale * renderScale;
   const fontSize = Math.max(8, Math.min(width, height) * 0.35);
 
   return (
