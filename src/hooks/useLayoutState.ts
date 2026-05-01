@@ -33,7 +33,52 @@ function createDefaultState(): LayoutState {
   };
 }
 
+function decodeFromHash(hash: string): LayoutState | null {
+  try {
+    const encoded = hash.replace(/^#layout=/, "");
+    const compact: unknown = JSON.parse(atob(encoded));
+    if (
+      typeof compact !== "object" ||
+      compact === null ||
+      !("t" in compact)
+    ) {
+      return null;
+    }
+    const { t, c, s } = compact as {
+      t: [number, number][];
+      c: string;
+      s: number;
+    };
+    if (!Array.isArray(t) || t.length !== 14) return null;
+
+    const defaults = createDefaultState();
+    return {
+      version: 1,
+      tables: defaults.tables.map((table, i) => ({
+        ...table,
+        position: { x: t[i]![0]!, y: t[i]![1]! },
+      })),
+      color: typeof c === "string" ? c : defaults.color,
+      sizeScale: typeof s === "number" ? s : defaults.sizeScale,
+    };
+  } catch {
+    return null;
+  }
+}
+
 function loadState(): LayoutState {
+  // 1. Check URL hash for shared layout
+  const hash = window.location.hash;
+  if (hash.startsWith("#layout=")) {
+    const fromHash = decodeFromHash(hash);
+    if (fromHash) {
+      // Clear hash so subsequent refreshes use localStorage
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      return fromHash;
+    }
+  }
+
+  // 2. Check localStorage
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -50,7 +95,21 @@ function loadState(): LayoutState {
   } catch {
     // ignore parse errors, fall through to default
   }
+
+  // 3. Default
   return createDefaultState();
+}
+
+function encodeToHash(state: LayoutState): string {
+  const compact = {
+    t: state.tables.map((table) => [
+      Math.round(table.position.x * 10) / 10,
+      Math.round(table.position.y * 10) / 10,
+    ]),
+    c: state.color,
+    s: Math.round(state.sizeScale * 10) / 10,
+  };
+  return "#layout=" + btoa(JSON.stringify(compact));
 }
 
 export function useLayoutState() {
@@ -85,5 +144,13 @@ export function useLayoutState() {
     setState(createDefaultState());
   }, []);
 
-  return { state, moveTable, setColor, setSizeScale, resetLayout };
+  const shareLayout = useCallback(() => {
+    const hash = encodeToHash(state);
+    const url = window.location.origin + window.location.pathname + hash;
+    window.history.replaceState(null, "", hash);
+    navigator.clipboard.writeText(url);
+    return url;
+  }, [state]);
+
+  return { state, moveTable, setColor, setSizeScale, resetLayout, shareLayout };
 }

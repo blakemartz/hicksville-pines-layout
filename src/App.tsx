@@ -24,7 +24,7 @@ function ZoomBridge({ controlsRef }: ZoomBridgeProps) {
 }
 
 function App() {
-  const { state, moveTable, setColor, setSizeScale, resetLayout } =
+  const { state, moveTable, setColor, setSizeScale, resetLayout, shareLayout } =
     useLayoutState();
   const [isDragging, setIsDragging] = useState(false);
   const [scale, setScale] = useState(1);
@@ -94,6 +94,7 @@ function App() {
         onColorChange={setColor}
         onSizeChange={setSizeScale}
         onReset={resetLayout}
+        onShare={shareLayout}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
       />

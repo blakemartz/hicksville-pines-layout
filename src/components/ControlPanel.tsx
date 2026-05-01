@@ -6,6 +6,7 @@ type ControlPanelProps = {
   onColorChange: (color: string) => void;
   onSizeChange: (scale: number) => void;
   onReset: () => void;
+  onShare: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
 };
@@ -16,10 +17,12 @@ function ControlPanel({
   onColorChange,
   onSizeChange,
   onReset,
+  onShare,
   onZoomIn,
   onZoomOut,
 }: ControlPanelProps) {
   const [isOpen, setIsOpen] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   if (!isOpen) {
     return (
@@ -85,6 +88,17 @@ function ControlPanel({
           Zoom &minus;
         </button>
       </div>
+
+      <button
+        onClick={() => {
+          onShare();
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 2000);
+        }}
+        className="rounded bg-blue-700 px-3 py-1.5 text-sm font-medium hover:bg-blue-600"
+      >
+        {copied ? "Link Copied!" : "Share Layout"}
+      </button>
 
       <button
         onClick={() => {
