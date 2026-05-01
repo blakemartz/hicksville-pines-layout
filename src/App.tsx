@@ -50,6 +50,8 @@ function App() {
         initialScale={1}
         minScale={0.3}
         maxScale={8}
+        centerZoomedOut={false}
+        limitToBounds={false}
         panning={{ disabled: isDragging }}
         onTransformed={(_ref, transformState) =>
           setScale(transformState.scale)
