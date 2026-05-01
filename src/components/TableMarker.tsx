@@ -71,7 +71,9 @@ function TableMarker({
   const renderScale = imageWidth / IMAGE_NATURAL_WIDTH;
   const width = (isRound ? 6 : 2) * PX_PER_FOOT * sizeScale * renderScale;
   const height = (isRound ? 6 : 4) * PX_PER_FOOT * sizeScale * renderScale;
-  const fontSize = Math.max(8, Math.min(width, height) * 0.35);
+  const isMobile = imageWidth < 768;
+  const fontSize = Math.max(6, Math.min(width, height) * (isMobile ? 0.22 : 0.35));
+  const borderWidth = isMobile ? 1 : 2;
 
   return (
     <div
@@ -88,7 +90,7 @@ function TableMarker({
         transform: "translate(-50%, -50%)",
         backgroundColor: color,
         borderRadius: isRound ? "50%" : "4px",
-        border: "2px solid rgba(255, 255, 255, 0.85)",
+        border: `${borderWidth}px solid rgba(255, 255, 255, 0.85)`,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
